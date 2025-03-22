@@ -1,9 +1,9 @@
 #include "interpreter.h"
 
 int main() {
-    Interpreter interpreter;
+
     const std::string filePath = "../script.my";
-    interpreter.run(filePath);
+    Interpreter::run(filePath);
     
     return 0;
 }

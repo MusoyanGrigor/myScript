@@ -2,7 +2,7 @@
 #include <iostream>
 #include <sstream>
 
-Interpreter::Interpreter() {}
+Interpreter::Interpreter() = default;
 
 void Interpreter::run(const std::string &filename) {
     std::ifstream file(filename);
@@ -23,8 +23,6 @@ void Interpreter::interpretLine(const std::string &line) {
     std::istringstream stream(line);
     std::string command;
     stream >> command;
-
-    const std::size_t size = command.size();
 
     if (command.size() > 6 && command.substr(0, 6) == "print(" && command[command.size() - 1] == ')') {
         std::string args = command.substr(6, command.size() - 7);
