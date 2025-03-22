@@ -3,6 +3,7 @@
 
 #include <string>
 #include <fstream>
+#include <vector>
 
 class Interpreter {
 public:
@@ -13,7 +14,7 @@ public:
 private:
     static void handlePrintCommand(const std::string &args);
     static void handlePrintlnCommand(const std::string &args);
-    std::string getVariableValue(const std::string& varName);
+    static std::vector<std::string> handleVariableCommand(const std::string &args);
 };
 
-#endif
+#endif // INTERPRETER_H
