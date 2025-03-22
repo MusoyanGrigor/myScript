@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/myScript.dir/src/main.cpp.o CMakeFiles/myScript.dir/src/interpreter.cpp.o -o myScript

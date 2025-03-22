@@ -1,0 +1,5 @@
+# ninja log v6
+1	26	1742636590765101802	build.ninja	a9dad251c1b36f39
+0	743	1742636590773028553	CMakeFiles/myScript.dir/src/main.cpp.o	9f3cd347895f198f
+1	779	1742636590773982395	CMakeFiles/myScript.dir/src/interpreter.cpp.o	c99bfe40e034783e
+780	862	1742636591551943072	myScript	8c807c10ef60d246
