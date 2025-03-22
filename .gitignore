@@ -1,32 +1,27 @@
-# Prerequisites
-*.d
+# Ignore build directories
+cmake-build-*/
 
-# Compiled Object files
-*.slo
-*.lo
+# Ignore object files
 *.o
-*.obj
 
-# Precompiled Headers
-*.gch
-*.pch
+# Ignore log files
+*.log
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+# Ignore executables
+myScript
+main
 
-# Fortran module files
-*.mod
-*.smod
+# Ignore IDE settings
+.idea/
+.vscode/
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# Ignore CMake-generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeLists.txt.user
 
-# Executables
-*.exe
-*.out
-*.app
+# Ignore Ninja build files
+.ninja_deps
+.ninja_log
+build.ninja
+
