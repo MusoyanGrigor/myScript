@@ -1,0 +1,2 @@
+# myScript
+basic scripting language
