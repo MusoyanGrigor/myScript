@@ -36,7 +36,7 @@ void Interpreter::interpretLine(const std::string &line) {
     } else if (std::isalpha(command[0]) && size > 0) {
         std::string rest;
         std::getline(stream, rest);
-         const size_t equalPos = rest.find('=');
+        const size_t equalPos = rest.find('=');
 
         if (equalPos != std::string::npos) {
             std::string varName = command;
@@ -86,6 +86,9 @@ void Interpreter::handleVariableAssignment(const std::string &name, const std::s
     if (trimmedValue.front() == '"' && trimmedValue.back() == '"') {
         trimmedValue = trimmedValue.substr(1, trimmedValue.size() - 2);
     }
+    else {
+        trimmedValue = std::to_string(eval(trimmedValue));
+    }
 
     variables[name] = trimmedValue;
 }
@@ -95,4 +98,19 @@ std::string Interpreter::evaluateExpression(const std::string &expr) {
         return variables[expr];
     }
     return expr;
+}
+
+double Interpreter::eval(const std::string& expression) {
+    std::stringstream ss(expression);
+    double result, num;
+    char op;
+
+    ss >> result;
+    while (ss >> op >> num) {
+        if (op == '+') result += num;
+        else if (op == '-') result -= num;
+        else if (op == '*') result *= num;
+        else if (op == '/') result /= num;
+    }
+    return result;
 }

@@ -19,6 +19,7 @@ private:
     void handlePrintlnCommand(const std::string &args);
     void handleVariableAssignment(const std::string &name, const std::string &value);
     std::string evaluateExpression(const std::string &expr);
+    static double eval(const std::string& expression);
 };
 
 #endif // INTERPRETER_H

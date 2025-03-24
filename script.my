@@ -1,4 +1,4 @@
 a = 5
-b = "Hello"
-println(a,b)
-println(b)
+b = 7
+c = 5 + 1 - 8
+println(c)
