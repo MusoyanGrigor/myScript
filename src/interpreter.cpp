@@ -1,5 +1,6 @@
 #include "interpreter.h"
 #include <iostream>
+#include <stack>
 
 Interpreter::Interpreter() = default;
 
@@ -85,8 +86,7 @@ void Interpreter::handleVariableAssignment(const std::string &name, const std::s
     std::string trimmedValue = value;
     if (trimmedValue.front() == '"' && trimmedValue.back() == '"') {
         trimmedValue = trimmedValue.substr(1, trimmedValue.size() - 2);
-    }
-    else {
+    } else {
         trimmedValue = std::to_string(eval(trimmedValue));
     }
 
@@ -100,17 +100,73 @@ std::string Interpreter::evaluateExpression(const std::string &expr) {
     return expr;
 }
 
-double Interpreter::eval(const std::string& expression) {
-    std::stringstream ss(expression);
-    double result, num;
-    char op;
+int precedence(const char op) {
+    if (op == '+' || op == '-') return 1;
+    if (op == '*' || op == '/') return 2;
+    return 0;
+}
 
-    ss >> result;
-    while (ss >> op >> num) {
-        if (op == '+') result += num;
-        else if (op == '-') result -= num;
-        else if (op == '*') result *= num;
-        else if (op == '/') result /= num;
+double applyOp(const double num1, const double num2, const char op) {
+    switch (op) {
+        case '+': return num1 + num2;
+        case '-': return num1 - num2;
+        case '*': return num1 * num2;
+        case '/': return num1 / num2;
+        default: ;
     }
-    return result;
+    return 0;
+}
+
+double Interpreter::eval(const std::string &expression) {
+    std::stack<double> values;
+    std::stack<char> ops;
+
+    for (size_t i = 0; i < expression.length(); i++) {
+        if (isspace(expression[i])) continue;
+
+        if (isdigit(expression[i])) {
+            double val = 0;
+            while (i < expression.length() && isdigit(expression[i])) {
+                val = val * 10 + (expression[i] - '0');
+                i++;
+            }
+            i--;
+            values.push(val);
+        } else if (expression[i] == '(') {
+            ops.push(expression[i]);
+        } else if (expression[i] == ')') {
+            while (!ops.empty() && ops.top() != '(') {
+                const double val2 = values.top();
+                values.pop();
+                const double val1 = values.top();
+                values.pop();
+                const char op = ops.top();
+                ops.pop();
+                values.push(applyOp(val1, val2, op));
+            }
+            ops.pop();
+        } else {
+            while (!ops.empty() && precedence(ops.top()) >= precedence(expression[i])) {
+                const double val2 = values.top();
+                values.pop();
+                const double val1 = values.top();
+                values.pop();
+                const char op = ops.top();
+                ops.pop();
+                values.push(applyOp(val1, val2, op));
+            }
+            ops.push(expression[i]);
+        }
+    }
+
+    while (!ops.empty()) {
+        const double val2 = values.top();
+        values.pop();
+        const double val1 = values.top();
+        values.pop();
+        const char op = ops.top();
+        ops.pop();
+        values.push(applyOp(val1, val2, op));
+    }
+    return values.top();
 }

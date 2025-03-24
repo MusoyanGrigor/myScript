@@ -1,4 +1,2 @@
-a = 5
-b = 7
-c = 5 + 1 - 8
-println(c)
+expr = (5 + 1 - 8 * 0 + 5 + 3) / 7
+println(expr)
