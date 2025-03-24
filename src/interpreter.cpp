@@ -1,6 +1,7 @@
 #include "interpreter.h"
 #include <iostream>
 #include <stack>
+#include <cmath>
 
 Interpreter::Interpreter() = default;
 
@@ -100,22 +101,33 @@ std::string Interpreter::evaluateExpression(const std::string &expr) {
     return expr;
 }
 
-int precedence(const char op) {
-    if (op == '+' || op == '-') return 1;
-    if (op == '*' || op == '/') return 2;
-    return 0;
+int Interpreter::precedence(const char op) {
+    switch (op) {
+        case '+':
+        case '-': return 1;
+        case '*':
+        case '/': return 2;
+        case '^': return 3;
+        default: return 0;
+    }
 }
 
-double applyOp(const double num1, const double num2, const char op) {
+double Interpreter::applyOp(const double num1, const double num2, const char op) {
     switch (op) {
         case '+': return num1 + num2;
         case '-': return num1 - num2;
         case '*': return num1 * num2;
-        case '/': return num1 / num2;
-        default: ;
+        case '/':
+            if (num2 == 0) {
+                throw std::runtime_error("Error: Division by zero");
+            }
+        return num1 / num2;
+        case '^': return pow(num1, num2);
+        default:
+            throw std::invalid_argument("Invalid operator");
     }
-    return 0;
 }
+
 
 double Interpreter::eval(const std::string &expression) {
     std::stack<double> values;
