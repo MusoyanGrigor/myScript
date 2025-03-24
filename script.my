@@ -1,2 +1,4 @@
-println("jan","jan")
-print("che")
+a = 5
+b = "Hello"
+println(a,b)
+println(b)

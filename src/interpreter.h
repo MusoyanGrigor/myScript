@@ -1,20 +1,24 @@
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
 
-#include <string>
+#include <iostream>
 #include <fstream>
-#include <vector>
+#include <sstream>
+#include <unordered_map>
 
 class Interpreter {
 public:
     Interpreter();
-    static void run(const std::string &filename);
-    static void interpretLine(const std::string &line);
+    void run(const std::string &filename);
+    void interpretLine(const std::string &line);
 
 private:
-    static void handlePrintCommand(const std::string &args);
-    static void handlePrintlnCommand(const std::string &args);
-    static std::vector<std::string> handleVariableCommand(const std::string &args);
+    std::unordered_map<std::string, std::string> variables;
+
+    void handlePrintCommand(const std::string &args);
+    void handlePrintlnCommand(const std::string &args);
+    void handleVariableAssignment(const std::string &name, const std::string &value);
+    std::string evaluateExpression(const std::string &expr);
 };
 
 #endif // INTERPRETER_H

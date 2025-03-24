@@ -1,7 +1,5 @@
-#include <iostream>
-#include <sstream>
-#include <vector>
 #include "interpreter.h"
+#include <iostream>
 
 Interpreter::Interpreter() = default;
 
@@ -26,7 +24,6 @@ void Interpreter::interpretLine(const std::string &line) {
     stream >> command;
 
     const std::size_t size = command.size();
-    static std::vector<std::string> variableInfo;
 
     if (command.substr(0, 6) == "print(" && command[size - 1] == ')' && size > 6) {
         std::string args = command.substr(6, size - 7);
@@ -36,10 +33,22 @@ void Interpreter::interpretLine(const std::string &line) {
         std::string args = command.substr(8, size - 9);
         std::getline(stream, args);
         handlePrintlnCommand(args);
-    } else if (size > 0 && std::isalpha(command[0]) ) {
-        std::string args;
-        std::getline(stream, args);
-        variableInfo = handleVariableCommand(args);
+    } else if (std::isalpha(command[0]) && size > 0) {
+        std::string rest;
+        std::getline(stream, rest);
+         const size_t equalPos = rest.find('=');
+
+        if (equalPos != std::string::npos) {
+            std::string varName = command;
+            std::string value = rest.substr(equalPos + 1);
+
+            varName.erase(varName.find_last_not_of(" \t") + 1);
+            value.erase(0, value.find_first_not_of(" \t"));
+
+            handleVariableAssignment(varName, value);
+        } else {
+            std::cerr << "Syntax error: " << command << std::endl;
+        }
     } else {
         std::cerr << "Syntax error: " << command << std::endl;
     }
@@ -57,13 +66,12 @@ void Interpreter::handlePrintCommand(const std::string &args) {
         if (!first) {
             std::cout << " ";
         }
-
         first = false;
+
         if (part.front() == '"' && part.back() == '"') {
             std::cout << part.substr(1, part.size() - 2);
         } else {
-            std::vector<std::string> variableInfo = handleVariableCommand(args);
-            std::cout << variableInfo.at(1) << " ";
+            std::cout << evaluateExpression(part);
         }
     }
 }
@@ -73,31 +81,18 @@ void Interpreter::handlePrintlnCommand(const std::string &args) {
     std::cout << std::endl;
 }
 
-std::vector<std::string> Interpreter::handleVariableCommand(const std::string &args) {
-    std::istringstream argStream(args);
-    std::string part;
-
-    std::string variableName;
-    std::string variableValue;
-    std::string variableType;
-
-    size_t partIndex = 0;
-    while (std::getline(argStream, part, '=')) {
-        if (partIndex == 0) {
-            variableName = part;
-        } else if (partIndex == 1) {
-            variableValue = part;
-        }
-
-        ++partIndex;
+void Interpreter::handleVariableAssignment(const std::string &name, const std::string &value) {
+    std::string trimmedValue = value;
+    if (trimmedValue.front() == '"' && trimmedValue.back() == '"') {
+        trimmedValue = trimmedValue.substr(1, trimmedValue.size() - 2);
     }
-    try {
-        std::stof(variableValue);
-        variableType = "number";
-    } catch (const std::invalid_argument &) {
-        variableType = "string";
-    }
-    std::vector<std::string> variableInfo = {variableName, variableValue, variableType};
 
-    return variableInfo;
+    variables[name] = trimmedValue;
+}
+
+std::string Interpreter::evaluateExpression(const std::string &expr) {
+    if (variables.contains(expr)) {
+        return variables[expr];
+    }
+    return expr;
 }
