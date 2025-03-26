@@ -1,2 +1,4 @@
-expr = (5 + 1 - 8 * 0 + 5 + 3) / 7
-println(expr)
+expr = ((5 + 1 - 8 * 0 + 5 + 3) / 7) ^ 2
+a = 1
+v = a
+print(v)
